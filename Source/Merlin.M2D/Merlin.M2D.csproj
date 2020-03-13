@@ -5,11 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ECS\Components\" />
+    <ProjectReference Include="..\Merlin\Merlin.csproj" />
   </ItemGroup>
 
 </Project>
