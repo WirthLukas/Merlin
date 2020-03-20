@@ -1,14 +1,16 @@
 ﻿using System;
+using Merlin.Screens;
 using Microsoft.Xna.Framework;
 
 namespace Merlin
 {
-    public abstract class Core : Game
+    public class Core : Game
     {
         protected GraphicsDeviceManager GraphicsDeviceManager { get; set; }
+        protected ScreenManager ScreenManager { get; set; }
 
-        protected Core(int width = 1280, int height = 720, bool isFullScreen = false,
-            string contentDirectory = "Content")
+        public Core(int width = 1280, int height = 720, bool isFullScreen = false,
+            string contentDirectory = "Content", bool useDefaultScreenManager = true)
         {
             GraphicsDeviceManager = new GraphicsDeviceManager(this)
             {
@@ -18,6 +20,21 @@ namespace Merlin
             };
 
             Content.RootDirectory = contentDirectory ?? throw new ArgumentNullException(nameof(contentDirectory));
+
+            if (useDefaultScreenManager)
+            {
+                ScreenManager = new ScreenManager(this);
+                Components.Add(ScreenManager);
+            }
         }
+
+        // TODO: Add AfterLoadContent Method?
+
+        #region <<Lifecycle Methods>>
+
+        
+
+        #endregion
+
     }
 }

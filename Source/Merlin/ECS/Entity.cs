@@ -1,34 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Merlin.ECS.Contracts;
+using Merlin.ECS.InternalUtils;
 
 namespace Merlin.ECS
 {
-    public class Entity : IEntity, IComparable<Entity>, IComparable
+    public class Entity : IComparable<Entity>, IComparable
     {
-        #region <<Fields>>
-
-        private static long _nextId;
+        private static ulong _nextId;
+        private readonly ComponentManager _componentManager;
         private bool _destroyed;
-        private readonly Dictionary<Type, Component> _components = new Dictionary<Type, Component>();
-
-        #endregion
 
         #region <<Properties>>
 
-        public long Id { get; }
+        /// <summary>
+        /// Id of the Entity
+        /// </summary>
+        public ulong Id { get; }
+
+        /// <summary>
+        /// Name of the Entity
+        /// </summary>
         public string Name { get; set; }
 
-        public Component[] Components => _components
-            .Select(item => item.Value)
-            .ToArray();
+        public Component[] Components => _componentManager.Components;
+        public Component[] ActiveComponents => _componentManager.ActiveComponents;
 
-        public Component[] ActiveComponents => _components
-            .Select(item => item.Value)
-            .Where(c => c.Enabled)
-            .ToArray();
-
+        /// <summary>
+        /// Returns if the Entity is destroyed.
+        /// Systems will not update this entity 
+        /// if it is destroyed
+        /// </summary>
         public bool Destroyed
         {
             get => _destroyed;
@@ -37,62 +38,58 @@ namespace Merlin.ECS
                 _destroyed = value;
 
                 if (_destroyed)
-                    IsDestroyedChanged?.Invoke(this, EventArgs.Empty);
+                    DestroyedChanged?.Invoke(this);
             }
         }
 
         #endregion
 
-        public event EventHandler<EventArgs> IsDestroyedChanged;
+        public event DestroyedHandler DestroyedChanged;
 
         public Entity(string name)
         {
             Id = _nextId++;
-            Name = name;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            _componentManager = new ComponentManager();
         }
 
-        #region <<Methods>>
+        public Entity()
+            : this(Utils.RandomString(10))
+        { }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="component"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public virtual void AddComponent(Component component)
+        #region <<ComponentManager Methods>>
+
+        public T GetComponent<T>(bool withInherited = false) where T : Component
+            => _componentManager.GetComponent<T>(withInherited);
+
+        public bool HasComponent<T>() where T : Component
+            => _componentManager.HasComponent<T>();
+
+        public bool HasComponentOfType(Type type)
+            => _componentManager.HasComponentOfType(type);
+
+        public T AddComponent<T>(T component) where T : Component
         {
-            if (component == null) throw new ArgumentNullException(nameof(component));
+            _componentManager.AddComponent(component);
 
-            CheckRequiredComponents(component, Component.RequiredComponentsOf(component));
-
-            _components.Add(component.GetType(), component);
             component.AddToEntity(this);
             component.Initialize();
+            return component;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="components"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public virtual void AddComponents(params Component[] components)
+        public T AddComponent<T>() where T : Component, new()
+            => AddComponent(new T());
+
+        public void AddComponents(params Component[] components)
         {
-            foreach (var c in components)
-                AddComponent(c);
+            foreach (var component in components)
+                AddComponent(component);
         }
 
-        public virtual Component RemoveComponentOfType(Type type)
+        public Component RemoveComponentOfType(Type type)
         {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-
-            if (!HasComponentOfType(type))
-                throw new ArgumentException($"No Component of type {type.Name} found!");
-
-            if (Component.IsCoreComponent(type))
-                throw new ArgumentException($"Cannot remove Core Component {type.Name}");
-
-            Component c = _components[type];
+            Component c = _componentManager.RemoveComponentOfType(type);
             c.RemoveFromEntity();
-            _components.Remove(type);
             return c;
         }
 
@@ -101,46 +98,19 @@ namespace Merlin.ECS
 
         public void ClearComponents()
         {
-            foreach (var c in _components.Select(item => item.Value))
+            foreach (var c in _componentManager.Components)
             {
                 c.RemoveFromEntity();
             }
 
-            _components.Clear();
-        }
-
-        public virtual T GetComponent<T>() where T : Component
-        {
-            if (!HasComponent<T>())
-                throw new ArgumentException($"No Component of type {typeof(T).Name} found!");
-
-            return _components[typeof(T)] as T;
-        }
-
-        public bool HasComponent<T>() where T : Component
-            => HasComponentOfType(typeof(T));
-
-        public bool HasComponentOfType(Type type)
-        {
-            if (!type.IsSubclassOf(typeof(Component)))
-                throw new ArgumentException("Type must inherit Component!");
-
-            return _components.ContainsKey(type);
+            _componentManager.ClearComponents();
         }
 
         #endregion
 
-        #region <<Fluent Methods>>
+        #region <<Methods>>
 
-        public Entity WithComponents(params Component[] components)
-        {
-            AddComponents(components);
-            return this;
-        }
-
-        #endregion
-
-        #region <<Interface Methods>>
+        public void Destroy() => Destroyed = true;
 
         /// <summary>
         /// 
@@ -172,6 +142,16 @@ namespace Merlin.ECS
                 throw new InvalidOperationException("Can only compare with other Components");
 
             return this.CompareTo(other);
+        }
+
+        #endregion
+
+        #region <<Fluent Methods>>
+
+        public Entity WithComponents(params Component[] components)
+        {
+            AddComponents(components);
+            return this;
         }
 
         #endregion

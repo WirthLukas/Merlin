@@ -1,19 +1,66 @@
 ﻿using System;
 using System.Linq;
 using Merlin.ECS.Attributes;
-using Merlin.ECS.Contracts;
+using Microsoft.Xna.Framework;
 
 namespace Merlin.ECS
 {
-    public abstract class Component /*: IComparable<Component>, IComparable*/
+    public abstract class Component : IUpdateable, IComparable<Component>, IComparable
     {
+        #region <<Fields>>
+
+        private int _updateOrder;
         private bool _isEnabled;
-        private IEntity _entity;
-        // private int _updateOrder;
+        private Entity _entity;
+
+        #endregion
 
         #region <<Properties>>
 
-        public IEntity Entity
+        /// <summary>
+        /// Is this Component enabled?
+        /// Which means: should this Component influence the behavior of the related entity
+        /// </summary>
+        public bool Enabled
+        {
+            get => _isEnabled;
+            set
+            {
+                // Don't call Event Methods if nothing is changing
+                if (_isEnabled == value)
+                    return;
+
+                _isEnabled = value;
+
+                if (_isEnabled)
+                    OnEnabled();
+                else
+                    OnDisabled();
+
+                EnabledChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Returns the Update Order.
+        /// </summary>
+        public int UpdateOrder
+        {
+            get => _updateOrder;
+            set
+            {
+                if (_updateOrder != value)
+                {
+                    _updateOrder = value;
+                    UpdateOrderChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// The entity where this Component is related to
+        /// </summary>
+        public Entity Entity
         {
             get => _entity;
             protected set
@@ -25,31 +72,10 @@ namespace Merlin.ECS
             }
         }
 
-        public bool Enabled
-        {
-            get => _isEnabled;
-            set
-            {
-                _isEnabled = value;
-                
-                if (_isEnabled)
-                    OnEnabled();
-                else
-                    OnDisabled();
-            }
-        }
-
-        //public int UpdateOrder
-        //{
-        //    get => _updateOrder;
-        //    set
-        //    {
-        //        _updateOrder = value;
-        //        OnUpdateOrderChanged(_updateOrder);
-        //    }
-        //}
-
         #endregion
+
+        public event EventHandler<EventArgs> EnabledChanged;
+        public event EventHandler<EventArgs> UpdateOrderChanged;
 
         #region <<Entity based Methods>>
 
@@ -58,7 +84,7 @@ namespace Merlin.ECS
         /// to enabled
         /// </summary>
         /// <param name="entity"></param>
-        internal virtual void AddToEntity(IEntity entity)
+        internal virtual void AddToEntity(Entity entity)
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity), "Cannot add to null");
             OnAddedToEntity();
@@ -83,10 +109,9 @@ namespace Merlin.ECS
         #region <<Lifecycle Methods>>
 
         /// <summary>
-        /// TODO 02 Find good description for Initialize
+        /// TODO: Description for Init
         /// </summary>
-        public virtual void Initialize()
-        { }
+        public virtual void Initialize() { }
 
         /// <summary>
         /// Behavior after this component is added to an entity
@@ -108,54 +133,48 @@ namespace Merlin.ECS
         /// </summary>
         protected virtual void OnDisabled() { }
 
-        /*
         /// <summary>
-        /// Behavior after the update order is changed.
-        /// This Method Is for Class intern or subclasses' handling.
-        /// The Event is for other classes
+        /// If needed, you can update you component based on
+        /// the gameTime
         /// </summary>
-        /// <param name="newUpdateOrder"></param>
-        protected virtual void OnUpdateOrderChanged(int newUpdateOrder) { }
-        */
+        /// <param name="gameTime"></param>
+        public virtual void Update(GameTime gameTime) { }
 
         #endregion
 
-        #region <<Interface Implementations>>
+        #region <<Comparable Implementation>>
 
-        //public int CompareTo(Component other)
-        //{
-        //    if (other == null)
-        //        throw new ArgumentNullException(nameof(other), "Not comparable with null");
+        public int CompareTo(Component other)
+        {
+            if (other == null) throw new ArgumentNullException(nameof(other), "Not comparable with null");
 
-        //    return _updateOrder.CompareTo(other.UpdateOrder);
-        //}
+            return _updateOrder.CompareTo(other.UpdateOrder);
+        }
 
-        //public int CompareTo(object obj)
-        //{
-        //    if (obj == null)
-        //        throw new ArgumentNullException(nameof(obj), "Not comparable with null");
+        public int CompareTo(object obj)
+        {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj), "Not comparable with null");
 
-        //    if (!(obj is Component other))
-        //        throw new InvalidOperationException("Can only compare with other Components");
+            if (!(obj is Component other))
+                throw new InvalidOperationException("Can only compare with other Components");
 
-        //    return CompareTo(other);
-        //}
+            return CompareTo(other);
+        }
 
         #endregion
 
         #region <<Fluent Methods>>
 
-        //public Component WithUpdateOrder(int updateOrder)
-        //{
-        //    _updateOrder = updateOrder;
-        //    return this;
-        //}
-
-        public Component IsEnabled(bool isEnabled)
+        public Component WithUpdateOrder(int updateOrder)
         {
-            if (_isEnabled != isEnabled)
-                Enabled = isEnabled;
+            _updateOrder = updateOrder;
+            return this;
+        }
 
+        public Component IsEnabled(bool enabled)
+        {
+            Enabled = enabled;
             return this;
         }
 

@@ -1,6 +1,12 @@
 ﻿using System;
+using Merlin;
 using Merlin.ECS;
+using Merlin.ECS.Attributes;
+using Merlin.ECS.Builders;
+using Merlin.ECS.Contracts;
 using Merlin.M2D.ECS.Components;
+using Merlin.M2D.ECS.Components.Positioning;
+using Merlin.M2D.ECS.Components.Sprites;
 
 namespace Merlin.ConsoleTests
 {
@@ -8,7 +14,7 @@ namespace Merlin.ConsoleTests
     {
         static void Main(string[] args)
         {
-            DateTime start = DateTime.Now;
+            /*DateTime start = DateTime.Now;
 
             try
             {
@@ -45,7 +51,31 @@ namespace Merlin.ConsoleTests
             {
                 DateTime stop = DateTime.Now;
                 Console.WriteLine($"Dauer: {(stop - start).Milliseconds}");
+            }*/
+
+            Entity<> b = new Entity()
+                .AddComponent(new Position2D())
+                    .WithUpdateOrder(0)
+                    .Entity
+                .AddComponent(new Moving2D())
+                    .Entity;
+
+            Entity e = new Entity()
+                .WithComponents(
+                    new Position2D()
+                        .WithUpdateOrder(0),
+                    new Moving2D()
+                );
+
+            DateTime start = DateTime.Now;
+
+            for (int i = 0; i < 10000000; i++)
+            {
+                e.GetComponent<Moving2D>();
             }
+
+            DateTime stop = DateTime.Now;
+            Console.WriteLine($"Dauer: {(stop - start).Milliseconds}");
         }
     }
 }
