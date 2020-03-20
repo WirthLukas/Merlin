@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ECS\Components\SimpleSprite.cs~RF11c50e2a.TMP" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Merlin\Merlin.csproj" />
   </ItemGroup>
 
