@@ -50,14 +50,22 @@ namespace SpaceAdventure.Screens
                     new SimpleSprite(_content.Load<Texture2D>("Characters/player"))
                 );
 
+            var anim = new DynamicAnimation(_content.Load<Texture2D>("Attacks/darkness"));
+
+            for (int i = 0; i < 3; i++)
+            {
+                anim.AddFrame(new Rectangle(i * 192, 0, 192, 192), TimeSpan.FromSeconds(0.25));
+            }
+
             _world.AddEntity(new Entity("attack"))
                 .WithComponents(
                     new Position2D(200, 200),
-                    new SimpleAnimatedSprite(
-                                _content.Load<Texture2D>("Attacks/darkness"),
-                                3, 5, TimeSpan.FromMilliseconds(200), scale: 0.5f,
-                                stopAtLastFrame: true
-                            )
+                    //new SimpleAnimatedSprite(
+                    //            _content.Load<Texture2D>("Attacks/darkness"),
+                    //            3, 5, TimeSpan.FromMilliseconds(200), scale: 0.5f,
+                    //            stopAtLastFrame: true
+                    //        )
+                    anim
                 );
         }
 

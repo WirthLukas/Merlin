@@ -32,7 +32,7 @@ namespace Merlin.M2D.ECS.Components.Sprites
         {
             get
             {
-                Rectangle bounds = base.Bounds;
+                Rectangle bounds = Texture.Bounds;
                 // divide width and height of texture into width and height of one frame
                 // and expand them by scale
                 // TODO: Use FrameWidth ?
