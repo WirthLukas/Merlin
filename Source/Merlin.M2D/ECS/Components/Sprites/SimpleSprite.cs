@@ -14,11 +14,17 @@ namespace Merlin.M2D.ECS.Components.Sprites
             get
             {
                 Rectangle textureBounds = Texture.Bounds;
-                return new Rectangle(
+
+                textureBounds.Width = (int) (textureBounds.Width * Scale);
+                textureBounds.Height = (int) (textureBounds.Height * Scale);
+
+                return textureBounds;
+
+                /*return new Rectangle(
                     textureBounds.X, textureBounds.Y,
                     (int)(textureBounds.Width * Scale),
                     (int)(textureBounds.Height * Scale)
-                );
+                );*/
             }
         }
 

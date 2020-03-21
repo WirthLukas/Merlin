@@ -1,4 +1,5 @@
-﻿using Merlin.ECS;
+﻿using System;
+using Merlin.ECS;
 using Merlin.ECS.Builders;
 using Merlin.M2D.ECS.Components.Positioning;
 using Merlin.M2D.ECS.Components.Sprites;
@@ -46,7 +47,17 @@ namespace SpaceAdventure.Screens
             _world.AddEntity(new Entity("player-1"))
                 .WithComponents(
                     new Position2D(100, 100),
-                    new SimpleAnimatedSprite(_content.Load<Texture2D>("Characters/player"), 2)
+                    new SimpleSprite(_content.Load<Texture2D>("Characters/player"))
+                );
+
+            _world.AddEntity(new Entity("attack"))
+                .WithComponents(
+                    new Position2D(200, 200),
+                    new SimpleAnimatedSprite(
+                                _content.Load<Texture2D>("Attacks/darkness"),
+                                3, 5, TimeSpan.FromMilliseconds(200), scale: 0.5f,
+                                stopAtLastFrame: true
+                            )
                 );
         }
 
