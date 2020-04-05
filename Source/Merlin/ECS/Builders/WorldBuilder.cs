@@ -4,10 +4,18 @@ using Merlin.ECS.Contracts;
 
 namespace Merlin.ECS.Builders
 {
+    /// <summary>
+    /// Builder class for creating a world object
+    /// </summary>
     public class WorldBuilder
     {
         private readonly List<ISystem> _systems = new List<ISystem>();
 
+        /// <summary>
+        /// Adds a system to the world context
+        /// </summary>
+        /// <param name="system"></param>
+        /// <returns>this Worldbuilder</returns>
         public WorldBuilder AddSystem(ISystem system)
         {
             if (system == null) throw new ArgumentNullException(nameof(system));
@@ -16,6 +24,10 @@ namespace Merlin.ECS.Builders
             return this;
         }
 
+        /// <summary>
+        /// Creates the world object, with the applied configuration
+        /// </summary>
+        /// <returns>the world object</returns>
         public World Build()
         {
             var world = new World();

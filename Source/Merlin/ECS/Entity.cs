@@ -70,8 +70,12 @@ namespace Merlin.ECS
 
         public T AddComponent<T>(T component) where T : Component
         {
-            _componentManager.AddComponent(component);
+            if (component is null) throw new ArgumentNullException(nameof(component));
 
+            // Only needed if you allow Component annotations (which reduced performance)
+            // CheckRequiredComponents(component, Component.RequiredComponentsOf(component));
+
+            _componentManager.AddComponent(component);
             component.AddToEntity(this);
             component.Initialize();
             return component;
@@ -88,6 +92,10 @@ namespace Merlin.ECS
 
         public Component RemoveComponentOfType(Type type)
         {
+            // Only needed if you allow Component annotations (which reduced performance)
+            //if (Component.IsCoreComponent(type)) 
+            //    throw new ArgumentException($"Cannot remove Core Component {type.Name}");
+
             Component c = _componentManager.RemoveComponentOfType(type);
             c.RemoveFromEntity();
             return c;
