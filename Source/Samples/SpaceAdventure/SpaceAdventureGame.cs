@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Merlin;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SpaceAdventure.Screens;
@@ -11,7 +7,7 @@ namespace SpaceAdventure
 {
     public class SpaceAdventureGame : Merlin.Core
     {
-		internal SpriteBatch SpriteBatch { get; set; }
+		internal SpriteBatch? SpriteBatch { get; set; }
 
         public SpaceAdventureGame()
 		    : base(width: 900, height: 600)

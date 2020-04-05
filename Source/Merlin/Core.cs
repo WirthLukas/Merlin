@@ -10,7 +10,7 @@ namespace Merlin
         protected ScreenManager ScreenManager { get; set; }
 
         public Core(int width = 1280, int height = 720, bool isFullScreen = false,
-            string contentDirectory = "Content", bool useDefaultScreenManager = true)
+            string contentDirectory = "Content")
         {
             GraphicsDeviceManager = new GraphicsDeviceManager(this)
             {
@@ -21,11 +21,8 @@ namespace Merlin
 
             Content.RootDirectory = contentDirectory ?? throw new ArgumentNullException(nameof(contentDirectory));
 
-            if (useDefaultScreenManager)
-            {
-                ScreenManager = new ScreenManager(this);
-                Components.Add(ScreenManager);
-            }
+            ScreenManager = new ScreenManager(this);
+            Components.Add(ScreenManager);
         }
 
         // TODO: Add AfterLoadContent Method?
@@ -35,6 +32,5 @@ namespace Merlin
         
 
         #endregion
-
     }
 }

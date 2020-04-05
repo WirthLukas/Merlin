@@ -28,6 +28,8 @@ namespace Merlin.M2D.ECS.Components.Sprites
             }
         }
 
+        public virtual Rectangle? SourceRectangle => null;
+
         public SimpleSprite(Texture2D texture, float scale = 1)
         {
             Texture = texture;
@@ -43,9 +45,11 @@ namespace Merlin.M2D.ECS.Components.Sprites
             spriteBatch.Draw(
                 texture: Texture,
                 destinationRectangle: destination,
-                sourceRectangle: null,
+                sourceRectangle: SourceRectangle,
                 color: Color.White
             );
+
+            // spriteBatch.Draw(Texture, destination, null, Color.White, 3, new Vector2(0), SpriteEffects.None, 0);
         }
     }
 }

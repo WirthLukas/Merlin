@@ -53,7 +53,7 @@ namespace Merlin.ConsoleTests
                 Console.WriteLine($"Dauer: {(stop - start).Milliseconds}");
             }*/
 
-            Entity<> b = new Entity()
+            Entity b = new Entity()
                 .AddComponent(new Position2D())
                     .WithUpdateOrder(0)
                     .Entity
@@ -75,6 +75,16 @@ namespace Merlin.ConsoleTests
             }
 
             DateTime stop = DateTime.Now;
+            Console.WriteLine($"Dauer: {(stop - start).Milliseconds}");
+
+            start = DateTime.Now;
+
+            for (int i = 0; i < 10000000; i++)
+            {
+                e.GetComponent<Moving2D>(true);
+            }
+
+            stop = DateTime.Now;
             Console.WriteLine($"Dauer: {(stop - start).Milliseconds}");
         }
     }

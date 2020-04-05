@@ -35,10 +35,30 @@ namespace Merlin.M2D.ECS.Components.Sprites
                 Rectangle bounds = Texture.Bounds;
                 // divide width and height of texture into width and height of one frame
                 // and expand them by scale
-                // TODO: Use FrameWidth ?
-                bounds.Width = (int)((float)Texture.Width / Columns * Scale);
-                bounds.Height = (int)((float)Texture.Height / Rows * Scale);
+                //bounds.Width = (int)((float)Texture.Width / Columns * Scale);
+                //bounds.Height = (int)((float)Texture.Height / Rows * Scale);
+                bounds.Width = (int)(FrameWidth * Scale);
+                bounds.Height = (int)(FrameHeight * Scale);
+
                 return bounds;
+            }
+        }
+
+        public override Rectangle? SourceRectangle
+        {
+            get
+            {
+                int row = (int)((float)_currentFrame / Columns);
+                int col = _currentFrame % Columns;
+
+                Rectangle sourceRectangle = new Rectangle(
+                    x: FrameWidth * col,
+                    y: FrameHeight * row,
+                    width: FrameWidth,
+                    height: FrameHeight
+                );
+
+                return sourceRectangle;
             }
         }
 
@@ -98,15 +118,15 @@ namespace Merlin.M2D.ECS.Components.Sprites
         {
             //int width = Texture.Width / Columns;    // width of every single frame 
             //int height = Texture.Height / Rows;     // height of every single frame
-            int row = (int)((float)_currentFrame / Columns);
-            int col = _currentFrame % Columns;
+            //int row = (int)((float)_currentFrame / Columns);
+            //int col = _currentFrame % Columns;
 
-            Rectangle sourceRectangle = new Rectangle(
-                x: FrameWidth * col,
-                y: FrameHeight * row,
-                width: FrameWidth,
-                height: FrameHeight
-            );
+            //Rectangle sourceRectangle = new Rectangle(
+            //    x: FrameWidth * col,
+            //    y: FrameHeight * row,
+            //    width: FrameWidth,
+            //    height: FrameHeight
+            //);
 
             Rectangle destinationRectangle = new Rectangle(
                 x: (int)position.X,
@@ -118,7 +138,7 @@ namespace Merlin.M2D.ECS.Components.Sprites
             spriteBatch.Draw(
                 texture: Texture,
                 destinationRectangle: destinationRectangle,
-                sourceRectangle: sourceRectangle,
+                sourceRectangle: SourceRectangle,
                 color: Color.White
             );
         }

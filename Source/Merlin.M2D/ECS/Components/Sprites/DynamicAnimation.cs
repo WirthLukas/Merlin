@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+
 namespace Merlin.M2D.ECS.Components.Sprites
 {
     // From https://docs.microsoft.com/en-us/xamarin/graphics-games/monogame/introduction/part2#creating-the-animation-class
@@ -33,6 +34,8 @@ namespace Merlin.M2D.ECS.Components.Sprites
             }
         }
 
+        public bool StopAtLastFrame { get; }
+
         public override Rectangle Bounds
         {
             get
@@ -46,7 +49,7 @@ namespace Merlin.M2D.ECS.Components.Sprites
             }
         }
 
-        public bool StopAtLastFrame { get; }
+        public override Rectangle? SourceRectangle => CurrentFrame.SourceRectangle;
 
         private DynamicAnimationFrame CurrentFrame
         {

@@ -6,8 +6,8 @@ namespace SpaceAdventure
     {
         public static void Main(string[] args)
         {
-            using (var game = new SpaceAdventureGame())
-                game.Run();
+            using var game = new SpaceAdventureGame();
+            game.Run();
         }
     }
 }
