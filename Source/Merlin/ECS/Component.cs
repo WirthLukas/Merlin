@@ -5,6 +5,15 @@ using Microsoft.Xna.Framework;
 
 namespace Merlin.ECS
 {
+    /// <summary>
+    /// A Component can be added to an entity. This component inflates
+    /// the behaviour of the entity, if the corresponding system is applied to
+    /// the world object of the entity
+    /// 
+    /// Lifecycle Methods:
+    /// * On... Methods are for the behaviour of subclasses
+    /// * events are for other classes, who needs to be informed of changes
+    /// </summary>
     public abstract class Component : IUpdateable, IComparable<Component>, IComparable
     {
         #region <<Fields>>
@@ -74,7 +83,13 @@ namespace Merlin.ECS
 
         #endregion
 
+        /// <summary>
+        /// For other classes who needs to be informed if enabled value is changed
+        /// </summary>
         public event EventHandler<EventArgs> EnabledChanged;
+        /// <summary>
+        /// For other classes who needs to be informed if the update order has changed
+        /// </summary>
         public event EventHandler<EventArgs> UpdateOrderChanged;
 
         #region <<Entity based Methods>>
@@ -109,7 +124,7 @@ namespace Merlin.ECS
         #region <<Lifecycle Methods>>
 
         /// <summary>
-        /// TODO: Description for Init
+        /// Initializes Members of this component
         /// </summary>
         public virtual void Initialize() { }
 
@@ -144,6 +159,7 @@ namespace Merlin.ECS
 
         #region <<Comparable Implementation>>
 
+        /// <inheritdoc />
         public int CompareTo(Component other)
         {
             if (other == null) throw new ArgumentNullException(nameof(other), "Not comparable with null");
@@ -151,6 +167,7 @@ namespace Merlin.ECS
             return _updateOrder.CompareTo(other.UpdateOrder);
         }
 
+        /// <inheritdoc />
         public int CompareTo(object obj)
         {
             if (obj == null)
@@ -166,12 +183,22 @@ namespace Merlin.ECS
 
         #region <<Fluent Methods>>
 
+        /// <summary>
+        /// Sets the update order of this component
+        /// </summary>
+        /// <param name="updateOrder">new update order</param>
+        /// <returns>this component</returns>
         public Component WithUpdateOrder(int updateOrder)
         {
             _updateOrder = updateOrder;
             return this;
         }
 
+        /// <summary>
+        /// Sets the enabled value of this component
+        /// </summary>
+        /// <param name="enabled">is this component enabled</param>
+        /// <returns>this component</returns>
         public Component IsEnabled(bool enabled)
         {
             Enabled = enabled;
@@ -180,6 +207,16 @@ namespace Merlin.ECS
 
         #endregion
 
+        #region <<Archieve>>
+
+        // These are methods for checking the component annotations
+        // Are not executed, because annotations have lower performance
+
+        /// <summary>
+        /// Returns the types of the components, which are required for the given component
+        /// </summary>
+        /// <param name="c">the component, which should be analyzed</param>
+        /// <returns>The types of the required components</returns>
         internal static Type[] RequiredComponentsOf(Component c)
         {
             var attributes = Attribute.GetCustomAttributes(c.GetType());
@@ -192,6 +229,12 @@ namespace Merlin.ECS
             return requiredComponents;
         }
 
+        /// <summary>
+        /// Checks if the given type has the <see cref="CoreComponentAttribute"/>
+        /// Core Components can not be removed from the entity
+        /// </summary>
+        /// <param name="c">the type of a component</param>
+        /// <returns>is the given component a core component</returns>
         internal static bool IsCoreComponent(Type c)
         {
             var attributes = Attribute.GetCustomAttributes(c);
@@ -200,5 +243,6 @@ namespace Merlin.ECS
                 .OfType<CoreComponentAttribute>()
                 .Any();
         }
+        #endregion
     }
 }
