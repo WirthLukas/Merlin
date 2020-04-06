@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Merlin.M2D.ECS.Systems
 {
-    public class SpriteDrawerSystem : BaseUpdateSystem, IDrawSystem
+    public class SpriteDrawerSystem : UpdateSystem, IDrawSystem
     {
         private readonly SpriteBatch _spriteBatch;
         private List<Entity> _entities = new List<Entity>();

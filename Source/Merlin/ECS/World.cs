@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Merlin.ECS.Contracts;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Merlin.ECS
 {
@@ -24,9 +23,6 @@ namespace Merlin.ECS
         public Entity[] ActiveEntities => _entities.Values
             .Where(e => !e.Destroyed)
             .ToArray();
-
-        // TODO: should be removed, cause 3D games don't need a spritebatch
-        public SpriteBatch SpriteBatch { get; set; }
 
         internal World()
         { }
@@ -87,7 +83,7 @@ namespace Merlin.ECS
         }
 
         /// <summary>
-        /// Updates all applied update systems <see cref="BaseUpdateSystem"/>
+        /// Updates all applied update systems <see cref="UpdateSystem"/>
         /// </summary>
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
@@ -97,7 +93,7 @@ namespace Merlin.ECS
         }
 
         /// <summary>
-        /// Calls all the applied DrawSystems <see cref="BaseDrawSystem"/>
+        /// Calls all the applied DrawSystems <see cref="DrawSystem"/>
         /// </summary>
         /// <param name="gameTime"></param>
         public void Draw(GameTime gameTime)
@@ -215,7 +211,7 @@ namespace Merlin.ECS
 
         #endregion
 
-        #region <<Indexer>>
+        #region <<Special Definitions>>
 
         /// <summary>
         /// calls <see cref="GetEntityById"/>
@@ -235,6 +231,8 @@ namespace Merlin.ECS
 
         #region <<Dispose Pattern>>
 
+        // TODO: is Dispose pattern needed?
+
         ~World()
         {
             Dispose(false);
@@ -244,7 +242,6 @@ namespace Merlin.ECS
         {
             if (disposing)
             {
-                SpriteBatch?.Dispose();
             }
         }
 

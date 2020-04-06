@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace Merlin.M2D.ECS.Systems
 {
-    public class MovingSystem2D : BaseUpdateSystem
+    public class MovingSystem2D : UpdateSystem
     {
         public override void Update(GameTime gameTime)
         {
