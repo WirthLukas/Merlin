@@ -9,7 +9,7 @@ namespace Merlin
         protected GraphicsDeviceManager GraphicsDeviceManager { get; set; }
         protected ScreenManager ScreenManager { get; set; }
 
-        public Core(int width = 1280, int height = 720, bool isFullScreen = false,
+        protected Core(int width = 1280, int height = 720, bool isFullScreen = false,
             string contentDirectory = "Content")
         {
             GraphicsDeviceManager = new GraphicsDeviceManager(this)

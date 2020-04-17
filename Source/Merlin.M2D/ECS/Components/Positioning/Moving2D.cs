@@ -1,5 +1,4 @@
-﻿using System;
-using Merlin.ECS;
+﻿using Merlin.ECS;
 using Merlin.ECS.Attributes;
 using Microsoft.Xna.Framework;
 

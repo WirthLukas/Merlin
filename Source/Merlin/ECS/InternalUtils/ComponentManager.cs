@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Merlin.ECS.InternalUtils
 {
+    // TODO add method comments
     internal class ComponentManager
     {
         private readonly IDictionary<Type, Component> _components = new Dictionary<Type, Component>();

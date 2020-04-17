@@ -1,4 +1,5 @@
 ﻿using System;
+using Merlin;
 using Merlin.ECS;
 using Merlin.ECS.Builders;
 using Merlin.M2D.ECS.Components.Positioning;
@@ -9,6 +10,7 @@ using Merlin.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using SpaceAdventure.Systems;
 
 namespace SpaceAdventure.Screens
 {
@@ -35,6 +37,7 @@ namespace SpaceAdventure.Screens
             base.Initialize();
 
             _world = new WorldBuilder()
+                .AddSystem(new InputSystem())
                 .AddSystem(new MovingSystem2D())
                 .AddSystem(new SpriteDrawerSystem(_spriteBatch))
                 .Build();
@@ -50,7 +53,8 @@ namespace SpaceAdventure.Screens
             _world.AddEntity(new Entity("player-1"))
                 .WithComponents(
                     new Position2D(100, 100),
-                    new RotatedSprite<SimpleSprite>(new SimpleSprite(_content.Load<Texture2D>("Characters/player"), 1.5f))
+                    new NewMoving2D(15).WithDirection(new Vector2(0, 0)),
+                    new SimpleSprite(_content.Load<Texture2D>("Characters/player"), 1.5f)
                 );
 
             //var anim = new DynamicAnimation(_content.Load<Texture2D>("Attacks/darkness"));

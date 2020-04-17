@@ -69,7 +69,7 @@ namespace Merlin.M2D.ECS.Components.Sprites
 
         public void AddFrame(Rectangle sourceRectangle, TimeSpan duration)
         {
-            DynamicAnimationFrame newFrame = new DynamicAnimationFrame()
+            var newFrame = new DynamicAnimationFrame
             {
                 SourceRectangle = sourceRectangle,
                 Duration = duration
