@@ -1,4 +1,5 @@
 ﻿using System;
+using Merlin.ECS.Contracts;
 
 namespace Merlin.ECS.Attributes
 {
@@ -14,6 +15,9 @@ namespace Merlin.ECS.Attributes
 
         public RequiredComponentAttribute(Type componentType)
         {
+            if (!componentType.IsSubclassOf(typeof(IComponent)))
+                throw new ArgumentException("Type must inherit from IComponent!");
+            
             ComponentType = componentType;
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Merlin.ECS.Attributes;
+using Merlin.ECS.Contracts;
 using Microsoft.Xna.Framework;
 
 namespace Merlin.ECS
@@ -14,7 +15,7 @@ namespace Merlin.ECS
     /// * On... Methods are for the behaviour of subclasses
     /// * events are for other classes, who needs to be informed of changes
     /// </summary>
-    public abstract class Component : IUpdateable, IComparable<Component>, IComparable
+    public abstract class Component : IComponent
     {
         #region <<Fields>>
 
@@ -87,6 +88,7 @@ namespace Merlin.ECS
         /// For other classes who needs to be informed if enabled value is changed
         /// </summary>
         public event EventHandler<EventArgs> EnabledChanged;
+        
         /// <summary>
         /// For other classes who needs to be informed if the update order has changed
         /// </summary>
@@ -99,7 +101,7 @@ namespace Merlin.ECS
         /// to enabled
         /// </summary>
         /// <param name="entity"></param>
-        internal virtual void AddToEntity(Entity entity)
+        protected internal virtual void AddToEntity(Entity entity)
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity), "Cannot add to null");
             OnAddedToEntity();
@@ -109,7 +111,7 @@ namespace Merlin.ECS
         /// <summary>
         /// Removes this component from the related entity
         /// </summary>
-        internal virtual void RemoveFromEntity()
+        protected internal virtual void RemoveFromEntity()
         {
             if (_entity != null)
             {
@@ -160,7 +162,7 @@ namespace Merlin.ECS
         #region <<Comparable Implementation>>
 
         /// <inheritdoc />
-        public int CompareTo(Component other)
+        public int CompareTo(IComponent other)
         {
             if (other == null) throw new ArgumentNullException(nameof(other), "Not comparable with null");
 
@@ -173,7 +175,7 @@ namespace Merlin.ECS
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj), "Not comparable with null");
 
-            if (!(obj is Component other))
+            if (!(obj is IComponent other))
                 throw new InvalidOperationException("Can only compare with other Components");
 
             return CompareTo(other);
@@ -205,44 +207,6 @@ namespace Merlin.ECS
             return this;
         }
 
-        #endregion
-
-        #region <<Archieve>>
-
-        // These are methods for checking the component annotations
-        // Are not executed, because annotations have lower performance
-
-        /// <summary>
-        /// Returns the types of the components, which are required for the given component
-        /// </summary>
-        /// <param name="c">the component, which should be analyzed</param>
-        /// <returns>The types of the required components</returns>
-        internal static Type[] RequiredComponentsOf(Component c)
-        {
-            var attributes = Attribute.GetCustomAttributes(c.GetType());
-
-            var requiredComponents = attributes
-                .OfType<RequiredComponentAttribute>()
-                .Select(attr => attr.ComponentType)
-                .ToArray();
-
-            return requiredComponents;
-        }
-
-        /// <summary>
-        /// Checks if the given type has the <see cref="CoreComponentAttribute"/>
-        /// Core Components can not be removed from the entity
-        /// </summary>
-        /// <param name="c">the type of a component</param>
-        /// <returns>is the given component a core component</returns>
-        internal static bool IsCoreComponent(Type c)
-        {
-            var attributes = Attribute.GetCustomAttributes(c);
-
-            return attributes
-                .OfType<CoreComponentAttribute>()
-                .Any();
-        }
         #endregion
     }
 }

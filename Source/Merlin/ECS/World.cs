@@ -10,17 +10,17 @@ namespace Merlin.ECS
     {
         private readonly List<IUpdateSystem> _updateSystems = new List<IUpdateSystem>();
         private readonly List<IDrawSystem> _drawSystems = new List<IDrawSystem>();
-        private readonly SortedList<ulong, Entity> _entities = new SortedList<ulong, Entity>();
+        private readonly SortedList<ulong, IEntity> _entities = new SortedList<ulong, IEntity>();
 
         /// <summary>
         /// All entities, which are in this world context
         /// </summary>
-        public Entity[] Entities => _entities.Values.ToArray();
+        public IEntity[] Entities => _entities.Values.ToArray();
 
         /// <summary>
         /// Returns only the entities, which are not destroyed
         /// </summary>
-        public Entity[] ActiveEntities => _entities.Values
+        public IEntity[] ActiveEntities => _entities.Values
             .Where(e => !e.Destroyed)
             .ToArray();
 
@@ -108,7 +108,7 @@ namespace Merlin.ECS
         /// <typeparam name="T">Type of the entity</typeparam>
         /// <param name="entity"></param>
         /// <returns>the given entity</returns>
-        public T AddEntity<T>(T entity) where T : Entity
+        public T AddEntity<T>(T entity) where T : IEntity
         {
             _entities.Add(entity.Id, entity);
             return entity;
@@ -140,12 +140,12 @@ namespace Merlin.ECS
         public void DestroyEntity(ulong id) => DestroyEntity(_entities[id]);
 
         /// <summary>
-        /// Destroyes the given entity
+        /// Destroys the given entity
         /// </summary>
         /// <param name="entity"></param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public void DestroyEntity(Entity entity)
+        public void DestroyEntity(IEntity entity)
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -187,7 +187,7 @@ namespace Merlin.ECS
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Entity GetEntityById(ulong id) => _entities[id];
+        public IEntity GetEntityById(ulong id) => _entities[id];
 
         /// <summary>
         /// Returns a entity based on the given id or
@@ -195,7 +195,7 @@ namespace Merlin.ECS
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Entity GetEntityByIdOrNull(ulong id)
+        public IEntity GetEntityByIdOrNull(ulong id)
             => !_entities.ContainsKey(id) ? null : _entities[id];
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace Merlin.ECS
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Entity GetEntityByName(string name) =>
+        public IEntity GetEntityByName(string name) =>
             _entities
                 .Values
                 .SingleOrDefault(e => e.Name == name);
@@ -218,14 +218,14 @@ namespace Merlin.ECS
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Entity this[ulong id] => GetEntityById(id);
+        public IEntity this[ulong id] => GetEntityById(id);
 
         /// <summary>
         /// calls <see cref="GetEntityByName"/>
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Entity this[string name] => GetEntityByName(name);
+        public IEntity this[string name] => GetEntityByName(name);
 
         #endregion
 

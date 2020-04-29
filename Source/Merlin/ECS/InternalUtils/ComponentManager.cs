@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Merlin.ECS.Contracts;
 
 namespace Merlin.ECS.InternalUtils
 {
@@ -16,7 +17,7 @@ namespace Merlin.ECS.InternalUtils
                 .Where(c => c.Enabled)
                 .ToArray();
 
-        public TComponent GetComponent<TComponent>(bool withInherited = false) where TComponent : Component
+        public TComponent GetComponent<TComponent>(bool withInherited = false) where TComponent : class, IComponent
         {
             if (withInherited)
             {
@@ -29,14 +30,17 @@ namespace Merlin.ECS.InternalUtils
             return _components[typeof(TComponent)] as TComponent;
         }
 
-        public bool HasComponent<TComponent>() where TComponent : Component
+        public bool HasComponent<TComponent>() where TComponent : IComponent
             => HasComponentOfType(typeof(TComponent));
 
         public bool HasComponentOfType(Type type)
         {
-            if (!type.IsSubclassOf(typeof(Component)))
-                throw new ArgumentException("Type must inherit Component!");
+            // if (!type.IsSubclassOf(typeof(Component)))
+            //     throw new ArgumentException("Type must inherit from IComponent!");
 
+            if (!typeof(Component).IsAssignableFrom(type))
+                throw new ArgumentException("Type must inherit from IComponent!");
+            
             return _components.ContainsKey(type);
         }
 
@@ -52,6 +56,9 @@ namespace Merlin.ECS.InternalUtils
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
 
+            if (!typeof(Component).IsAssignableFrom(type))
+                throw new ArgumentException("Type must inherit from IComponent!");
+            
             if (!HasComponentOfType(type))
                 throw new ArgumentException($"No Component of type {type.Name} found!");
 

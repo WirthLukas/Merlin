@@ -4,7 +4,7 @@ using Merlin.ECS.InternalUtils;
 
 namespace Merlin.ECS
 {
-    public class Entity : IComparable<Entity>, IComparable
+    public class Entity : IEntity
     {
         private static ulong _nextId;
         private readonly ComponentManager _componentManager;
@@ -59,10 +59,10 @@ namespace Merlin.ECS
 
         #region <<ComponentManager Methods>>
 
-        public T GetComponent<T>(bool withInherited = false) where T : Component
+        public T GetComponent<T>(bool withInherited = false) where T : class, IComponent
             => _componentManager.GetComponent<T>(withInherited);
 
-        public bool HasComponent<T>() where T : Component
+        public bool HasComponent<T>() where T : class, IComponent
             => _componentManager.HasComponent<T>();
 
         public bool HasComponentOfType(Type type)
@@ -73,7 +73,7 @@ namespace Merlin.ECS
             if (component is null) throw new ArgumentNullException(nameof(component));
 
             // Only needed if you allow Component annotations (which reduced performance)
-            // CheckRequiredComponents(component, Component.RequiredComponentsOf(component));
+            // ComponentAnnotationChecker.CheckRequiredComponents(component, Component.RequiredComponentsOf(component));
 
             _componentManager.AddComponent(component);
             component.AddToEntity(this);
@@ -93,8 +93,8 @@ namespace Merlin.ECS
         public Component RemoveComponentOfType(Type type)
         {
             // Only needed if you allow Component annotations (which reduced performance)
-            //if (Component.IsCoreComponent(type)) 
-            //    throw new ArgumentException($"Cannot remove Core Component {type.Name}");
+            // if (ComponentAnnotationChecker.IsCoreComponent(type)) 
+            //     throw new ArgumentException($"Cannot remove Core Component {type.Name}");
 
             Component c = _componentManager.RemoveComponentOfType(type);
             c.RemoveFromEntity();
@@ -126,7 +126,7 @@ namespace Merlin.ECS
         /// <param name="other"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public int CompareTo(Entity other)
+        public int CompareTo(IEntity other)
         {
             if (other == null)
                 throw new ArgumentNullException(nameof(other), "Not comparable with null");
@@ -163,14 +163,5 @@ namespace Merlin.ECS
         }
 
         #endregion
-
-        protected void CheckRequiredComponents(Component adding, Type[] components)
-        {
-            foreach (var componentType in components)
-            {
-                if (!HasComponentOfType(componentType))
-                    throw new ArgumentException($"Component of type {componentType.Name} has to be added for Component {adding.GetType().Name}");
-            }
-        }
     }
 }
