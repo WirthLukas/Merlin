@@ -35,20 +35,29 @@ namespace Merlin.ECS
         /// <param name="system"></param>
         public void AddSystem(ISystem system)
         {
-            if (system == null) throw new ArgumentNullException(nameof(system));
+            if (system is null) throw new ArgumentNullException(nameof(system));
+
+            bool added = false;
 
             if (system is IUpdateSystem updateSystem)
             {
                 _updateSystems.Add(updateSystem);
                 updateSystem.UpdateOrderChanged += OnUpdateOrderChanged;
+                added = true;
             }
 
             if (system is IDrawSystem drawSystem)
             {
                 _drawSystems.Add(drawSystem);
                 drawSystem.DrawOrderChanged += OnDrawOrderChanged;
+                added = true;
             }
-                
+
+            if (!added)
+                throw new ArgumentException(
+                    "Not support System, must be either a IUpdate- or a IDrawSystem",
+                    nameof(system)
+                );
 
             system.Initialize(this);
         }
@@ -63,23 +72,29 @@ namespace Merlin.ECS
         {
             if (system == null) throw new ArgumentNullException(nameof(system));
 
-            ISystem result = null;
+            bool removed = false;
 
             if (system is IUpdateSystem updateSystem)
             {
                 _updateSystems.Remove(updateSystem);
                 updateSystem.UpdateOrderChanged -= OnUpdateOrderChanged;
-                result = updateSystem;
+                removed = true;
             }
 
             if (system is IDrawSystem drawSystem)
             {
                 _drawSystems.Remove(drawSystem);
                 drawSystem.DrawOrderChanged -= OnDrawOrderChanged;
-                result = drawSystem;
+                removed = true;
             }
+            
+            if (!removed)
+                throw new ArgumentException(
+                    "Not support System, must be either a IUpdate- or a IDrawSystem",
+                    nameof(system)
+                );
 
-            return result as T;
+            return system;
         }
 
         /// <summary>
@@ -115,7 +130,7 @@ namespace Merlin.ECS
         }
 
         /// <summary>
-        /// Destroyes and removes all assigned entities with the given name.
+        /// Destroys and removes all assigned entities with the given name.
         /// </summary>
         /// <param name="name"></param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -132,7 +147,7 @@ namespace Merlin.ECS
         }
 
         /// <summary>
-        /// Destroyes the assigned entity with the given id
+        /// Destroys the assigned entity with the given id
         /// </summary>
         /// <param name="id"></param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -161,7 +176,7 @@ namespace Merlin.ECS
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnDrawOrderChanged(object sender, EventArgs e)
+        private void OnDrawOrderChanged(object? sender, EventArgs e)
         {
             if (sender is IDrawSystem drawSystem && _drawSystems.Contains(drawSystem))
             {
@@ -174,7 +189,7 @@ namespace Merlin.ECS
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnUpdateOrderChanged(object sender, EventArgs e)
+        private void OnUpdateOrderChanged(object? sender, EventArgs e)
         {
             if (sender is IUpdateSystem updateSystem && _updateSystems.Contains(updateSystem))
             {
@@ -195,7 +210,7 @@ namespace Merlin.ECS
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public IEntity GetEntityByIdOrNull(ulong id)
+        public IEntity? GetEntityByIdOrNull(ulong id)
             => !_entities.ContainsKey(id) ? null : _entities[id];
 
         /// <summary>

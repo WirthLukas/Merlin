@@ -57,12 +57,12 @@ namespace Merlin.ECS
         /// <summary>
         /// Gets called when the enabled value has changed
         /// </summary>
-        public event EventHandler<EventArgs> EnabledChanged;
+        public event EventHandler<EventArgs>? EnabledChanged;
 
         /// <summary>
         /// Gets called when the update order value has changed
         /// </summary>
-        public event EventHandler<EventArgs> UpdateOrderChanged;
+        public event EventHandler<EventArgs>? UpdateOrderChanged;
 
         #endregion
 

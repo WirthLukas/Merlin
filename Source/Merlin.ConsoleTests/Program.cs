@@ -1,6 +1,10 @@
 ﻿using System;
+using Merlin.ECS;
+using Merlin.ECS.Builders;
+using Merlin.ECS.Contracts;
 using Microsoft.Xna.Framework;
 
+#nullable enable
 
 namespace Merlin.ConsoleTests
 {
@@ -8,10 +12,8 @@ namespace Merlin.ConsoleTests
     {
         static void Main(string[] args)
         {
-            var v = new Vector2(2, 2);
-            var d = new Vector2(0, 2);
-            
-            Console.WriteLine($"v: {v}\nd: {d}\nr: {v*d}");
         }
+
     }
+
 }

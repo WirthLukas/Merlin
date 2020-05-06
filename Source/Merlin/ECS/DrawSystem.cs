@@ -1,7 +1,6 @@
 ﻿using System;
 using Merlin.ECS.Contracts;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Merlin.ECS
 {
@@ -56,12 +55,12 @@ namespace Merlin.ECS
         /// <summary>
         /// Gets called when the draw order value has changed
         /// </summary>
-        public event EventHandler<EventArgs> DrawOrderChanged;
+        public event EventHandler<EventArgs>? DrawOrderChanged;
 
         /// <summary>
         /// Gets called when the visible value has changed
         /// </summary>
-        public event EventHandler<EventArgs> VisibleChanged;
+        public event EventHandler<EventArgs>? VisibleChanged;
 
         #endregion
 

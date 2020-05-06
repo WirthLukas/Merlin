@@ -17,7 +17,7 @@ namespace Merlin.ECS.InternalUtils
                 .Where(c => c.Enabled)
                 .ToArray();
 
-        public TComponent GetComponent<TComponent>(bool withInherited = false) where TComponent : class, IComponent
+        public TComponent? GetComponent<TComponent>(bool withInherited = false) where TComponent : class, IComponent
         {
             if (withInherited)
             {

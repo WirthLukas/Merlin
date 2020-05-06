@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Merlin.ECS;
 using Merlin.M2D.ECS.Components.Positioning;
 using Microsoft.Xna.Framework;
@@ -28,7 +29,8 @@ namespace SpaceAdventure.Systems
             
             foreach (var e in movableEntities)
             {
-                var move = e.GetComponent<NewMoving2D>();
+                var move = e.GetComponent<NewMoving2D>() ??
+                           throw new AccessViolationException($"Entity has no {nameof(NewMoving2D)} Component");
 
                 if (move.Moving && inputVector == Vector2.One)
                     move.StopMoving();

@@ -44,7 +44,7 @@ namespace Merlin.ECS
 
         #endregion
 
-        public event DestroyedHandler DestroyedChanged;
+        public event DestroyedHandler? DestroyedChanged;
 
         public Entity(string name)
         {
@@ -59,7 +59,7 @@ namespace Merlin.ECS
 
         #region <<ComponentManager Methods>>
 
-        public T GetComponent<T>(bool withInherited = false) where T : class, IComponent
+        public T? GetComponent<T>(bool withInherited = false) where T : class, IComponent
             => _componentManager.GetComponent<T>(withInherited);
 
         public bool HasComponent<T>() where T : class, IComponent
@@ -141,7 +141,7 @@ namespace Merlin.ECS
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj), "Not comparable with null");

@@ -10,14 +10,15 @@ namespace Merlin.Screens
         public Color ClearColor { get; set; }
         protected GraphicsDevice GraphicsDevice { get; set; }
 
-        protected Screen(Core game, string name)
-        : this (game, name, Color.CornflowerBlue)
+        protected Screen(Game game, string name)
+            : this (game, name, Color.CornflowerBlue)
         { }
 
-        protected Screen(Core game, string name, Color clearColor)
+        protected Screen(Game game, string name, Color clearColor)
         {
             Name = name;
             GraphicsDevice = game.GraphicsDevice;
+            ClearColor = clearColor;
         }
 
         public virtual void LoadContent() { }

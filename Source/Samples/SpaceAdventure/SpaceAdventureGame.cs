@@ -26,8 +26,7 @@ namespace SpaceAdventure
         protected override void LoadContent()
 		{
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-
-
+            
             base.LoadContent();
 		}
 

@@ -6,8 +6,8 @@ namespace Merlin
 {
     public class Core : Game
     {
-        protected GraphicsDeviceManager GraphicsDeviceManager { get; set; }
-        protected ScreenManager ScreenManager { get; set; }
+        protected GraphicsDeviceManager GraphicsDeviceManager;
+        protected readonly ScreenManager ScreenManager;
 
         protected Core(int width = 1280, int height = 720, bool isFullScreen = false,
             string contentDirectory = "Content")
@@ -29,7 +29,6 @@ namespace Merlin
 
         #region <<Lifecycle Methods>>
 
-        
 
         #endregion
     }

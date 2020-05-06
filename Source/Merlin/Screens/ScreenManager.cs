@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Xna.Framework;
 
 namespace Merlin.Screens
 {
-    public class ScreenManager : DrawableGameComponent
+    public class ScreenManager : Microsoft.Xna.Framework.DrawableGameComponent
     {
         private readonly Dictionary<string, Screen> _screens = new Dictionary<string, Screen>();
-        private Screen _previousScreen;
+        private Screen? _previousScreen;
+        private Screen? _activeScreen;
 
-        public Screen ActiveScreen { get; private set; }
+        public Screen? ActiveScreen => _activeScreen;
         public int ScreenCount => _screens.Count;
+
         // TODO: Build a Wrapper class for XNA GameComponents to Merlin?
-        public new Core Game => base.Game as Core;
+        public new Core Game => (Core) base.Game;
 
         #region <<Methods>>
 
@@ -22,7 +25,7 @@ namespace Merlin.Screens
         /// <param name="screen">the screen that should be added</param>
         /// <exception cref="ArgumentNullException">If screen is null</exception>
         /// <exception cref="ArgumentException">If a screen with that name is already in the managers list</exception>
-        public void AddScreen(Screen screen)
+        public void AddScreen([NotNull]Screen screen)
         {
             if (screen == null) throw new ArgumentNullException(nameof(screen));
 
@@ -39,12 +42,12 @@ namespace Merlin.Screens
         /// <param name="name">name of the new active screen</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public void LoadScreen(string name)
+        public void LoadScreen([NotNull]string name)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name), "could not search for a screen with name null");
 
-            Screen screen = GetScreenByName(name);
+            Screen? screen = GetScreenByName(name);
 
             if (screen == null)
                 throw new ArgumentException("There is no screen with that name");
@@ -63,18 +66,18 @@ namespace Merlin.Screens
             if (screen == null)
                 throw new ArgumentNullException(nameof(screen), "could not load null");
 
-            if (ActiveScreen != null)
+            if (_activeScreen != null)
             {
-                ActiveScreen.UnloadContent();
-                ActiveScreen.Dispose();
+                _activeScreen.UnloadContent();
+                _activeScreen.Dispose();
 
-                _previousScreen = ActiveScreen;
+                _previousScreen = _activeScreen;
             }
 
             screen.Initialize();
             screen.LoadContent();
 
-            ActiveScreen = screen;
+            _activeScreen = screen;
         }
 
         /// <summary>
@@ -93,7 +96,7 @@ namespace Merlin.Screens
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Screen GetScreenByName(string name) =>
+        public Screen? GetScreenByName(string name) =>
             _screens.ContainsKey(name) ? _screens[name] : null;
 
         #endregion

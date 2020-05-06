@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using Merlin.ECS.Attributes;
 using Merlin.ECS.Contracts;
 using Microsoft.Xna.Framework;
 
@@ -21,7 +19,7 @@ namespace Merlin.ECS
 
         private int _updateOrder;
         private bool _isEnabled;
-        private Entity _entity;
+        private Entity? _entity;
 
         #endregion
 
@@ -70,7 +68,7 @@ namespace Merlin.ECS
         /// <summary>
         /// The entity where this Component is related to
         /// </summary>
-        public Entity Entity
+        public Entity? Entity
         {
             get => _entity;
             protected set
@@ -87,12 +85,12 @@ namespace Merlin.ECS
         /// <summary>
         /// For other classes who needs to be informed if enabled value is changed
         /// </summary>
-        public event EventHandler<EventArgs> EnabledChanged;
+        public event EventHandler<EventArgs>? EnabledChanged;
         
         /// <summary>
         /// For other classes who needs to be informed if the update order has changed
         /// </summary>
-        public event EventHandler<EventArgs> UpdateOrderChanged;
+        public event EventHandler<EventArgs>? UpdateOrderChanged;
 
         #region <<Entity based Methods>>
 
@@ -170,7 +168,7 @@ namespace Merlin.ECS
         }
 
         /// <inheritdoc />
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj), "Not comparable with null");
