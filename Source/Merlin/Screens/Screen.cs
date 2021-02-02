@@ -1,38 +1,29 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Merlin.Screens
 {
     public abstract class Screen : IDisposable
     {
-        public string Name { get; }
+        public string Name { get; set; }
         public Color ClearColor { get; set; }
+        public ScreenManager? ScreenManager { get; internal set; }
         protected GraphicsDevice GraphicsDevice { get; set; }
 
-        protected Screen(Game game, string name)
-            : this (game, name, Color.CornflowerBlue)
-        { }
-
-        protected Screen(Game game, string name, Color clearColor)
+        public Screen(string name, GraphicsDevice graphicsDevice, Color? clearColor = null)
         {
             Name = name;
-            GraphicsDevice = game.GraphicsDevice;
-            ClearColor = clearColor;
+            GraphicsDevice = graphicsDevice;
+            ClearColor = clearColor ?? Color.CornflowerBlue;
         }
 
-        public virtual void LoadContent() { }
-        
         public virtual void Initialize() { }
-
-        public abstract void Update(GameTime gameTime);
-
-        public virtual void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(ClearColor);
-        }
-
+        public virtual void LoadContent() { }
         public virtual void UnloadContent() { }
+        public virtual void Draw() => GraphicsDevice.Clear(ClearColor);
+
+        public abstract void Update();
 
         #region <<Dispose Pattern>>
 
@@ -42,12 +33,8 @@ namespace Merlin.Screens
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-
-        }
+        protected virtual void Dispose(bool disposing) { }
 
         #endregion
-
     }
 }

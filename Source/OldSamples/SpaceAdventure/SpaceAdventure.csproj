@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!-- Für Debug -->
+    <!--<OutputType>Exe</OutputType>-->
+    <TargetFramework>net5.0</TargetFramework>
+    <MonoGamePlatform>DesktopGL</MonoGamePlatform>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Content.Builder" Version="3.7.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MonoGameContentReference Include="**\*.mgcb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Screens\GameScreen.cs~RF19f24514.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Merlin.M2D\Merlin.M2D.csproj" />
+    <ProjectReference Include="..\..\Merlin\Merlin.csproj" />
+  </ItemGroup>
+
+</Project>
