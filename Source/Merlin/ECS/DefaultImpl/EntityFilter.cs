@@ -35,9 +35,17 @@ namespace Merlin.ECS
 
         public bool Check(IEntity entity)
         {
-            bool must = _mustHaveComponentNames.All(entity.HasComponent);
-            bool mustNot = _mustNotHaveComponentNames.Any(entity.HasComponent);
-            return must && !mustNot;
+            foreach (var name in _mustHaveComponentNames)
+            {
+                if (!entity.HasComponent (name)) return false;
+            }
+
+            foreach (var name in _mustNotHaveComponentNames)
+            {
+                if (entity.HasComponent (name)) return false;
+            }
+
+            return true;
         }
     }
 }
