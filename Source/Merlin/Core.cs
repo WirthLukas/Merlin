@@ -25,5 +25,17 @@ namespace Merlin
         }
 
         // TODO: Add AfterLoadContent Method?
+
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            Time.GameTime = gameTime;
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+            Time.GameTime = gameTime;
+        }
     }
 }

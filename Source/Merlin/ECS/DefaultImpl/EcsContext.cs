@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Merlin.ECS.SystemLifecycle;
 
 // ReSharper disable once CheckNamespace
@@ -14,6 +15,8 @@ namespace Merlin.ECS
         private readonly Dictionary<ISystem, List<IEntity>> _systems = new();
         private readonly Dictionary<IDrawSystem, List<IEntity>> _drawSystems = new();
         private readonly Dictionary<uint, IEntity> _entities = new();
+
+        public IEnumerable<IEntity> Entities => _entities.Values;
 
         public IEcsContext AddSystem(ISystem system)
         {
@@ -59,7 +62,7 @@ namespace Merlin.ECS
 
         public void DestroySystems() => _onDestroySystems.ForEach(s => s.OnDestroy());
 
-        public void AddEntity(IEntity entity)
+        public IEntity AddEntity(IEntity entity)
         {
             _entities.Add(entity.Id, entity);
 
@@ -78,6 +81,8 @@ namespace Merlin.ECS
                     entities.Add(entity);
                 }
             }
+
+            return entity;
         }
 
         public void DestroyEntity(IEntity entity)
@@ -95,5 +100,23 @@ namespace Merlin.ECS
                 entities.Remove(entity);
             }
         }
+
+        #region <<Queries>>
+
+        // Todo Entity types??
+
+        public IEntity? GetSingleton(Func<IEntity, bool> predicate) => _entities.Values.SingleOrDefault(predicate);
+
+        public IEntity? GetRandom(Func<IEntity, bool> predicate)
+        {
+            return null;
+        }
+
+        public IEnumerable<IEntity> GetEntitiesByComponent()
+        {
+            return null;
+        }
+
+        #endregion
     }
 }

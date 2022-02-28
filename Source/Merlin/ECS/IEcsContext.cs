@@ -1,8 +1,11 @@
-﻿
+﻿using System.Collections.Generic;
+
 namespace Merlin.ECS
 {
     public interface IEcsContext
     {
+        IEnumerable<IEntity> Entities { get; }
+
         IEcsContext AddSystem(ISystem system);
         IEcsContext RemoveSystem(ISystem system);
 
@@ -11,7 +14,7 @@ namespace Merlin.ECS
         void Draw();
         void DestroySystems();
 
-        void AddEntity(IEntity entity);
+        IEntity AddEntity(IEntity entity);
         void DestroyEntity(IEntity entity);
     }
 }

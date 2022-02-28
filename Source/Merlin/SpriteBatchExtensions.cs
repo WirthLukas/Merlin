@@ -7,11 +7,11 @@ namespace Merlin
     public static class SpriteBatchExtensions
     {
         #region <<Get Default Texture>>
-        private static Texture2D _whitePixelTexture;
+        private static Texture2D? _whitePixelTexture;
 
         private static Texture2D GetTexture(SpriteBatch spriteBatch)
         {
-            if (_whitePixelTexture == null)
+            if (_whitePixelTexture is null)
             {
                 _whitePixelTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
                 _whitePixelTexture.SetData<Color>(new[] { Color.White });
