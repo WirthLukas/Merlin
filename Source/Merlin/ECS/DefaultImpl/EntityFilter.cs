@@ -44,7 +44,7 @@ namespace Merlin.ECS
             {
                 if (entity.HasComponent (name)) return false;
             }
-
+            
             return true;
         }
     }

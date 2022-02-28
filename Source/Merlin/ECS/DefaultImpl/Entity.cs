@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 
 // ReSharper disable once CheckNamespace
 namespace Merlin.ECS
 {
-    public class Entity : IEntity
+    public class Entity
     {
         private static uint _id = 0;
+        public static IEntityFilter That => new EntityFilter();
 
         public uint Id { get; }
 
@@ -32,7 +34,7 @@ namespace Merlin.ECS
             if (comp == null) throw new ArgumentNullException(nameof(comp));
 
             _components.Add(name, comp);
-            comp.Entity = this;
+            //comp.Entity = this;
             return comp;
         }
 
@@ -77,7 +79,5 @@ namespace Merlin.ECS
                 _components.Remove(name);
             }
         }
-
-        public static IEntityFilter That => new EntityFilter();
     }
 }

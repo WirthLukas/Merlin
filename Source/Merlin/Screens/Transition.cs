@@ -17,7 +17,7 @@ namespace Merlin.Screens
         public event EventHandler? StateChanged;
         public event EventHandler? Completed;
 
-        public Transition(float duration)
+        protected Transition(float duration)
         {
             Duration = duration;
             _halfDuration = duration / 2f;

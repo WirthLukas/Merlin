@@ -30,7 +30,7 @@ namespace TestGame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _screenManager.AddScreen(new MenuScreen(this.GraphicsDevice, _spriteBatch))
-                          .AddScreen(new GameScreen(this.GraphicsDevice, _spriteBatch));
+                          .AddScreen(new GameScreen(this, this.GraphicsDevice, _spriteBatch));
 
             // TODO: use this.Content to load your game content here
             _screenManager.LoadScreen("Game");
